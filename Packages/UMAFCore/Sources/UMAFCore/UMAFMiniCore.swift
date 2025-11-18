@@ -131,7 +131,7 @@ public enum UMAFMiniCore {
     return w
   }
 
-  private static func firstMarkdownHeadingTitle(in text: String) -> String? {
+  static func firstMarkdownHeadingTitle(in text: String) -> String? {
     for raw in text.components(separatedBy: "\n") {
       let trimmed = raw.trimmingCharacters(in: .whitespaces)
       guard trimmed.first == "#" else { continue }

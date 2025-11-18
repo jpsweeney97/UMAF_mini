@@ -1,0 +1,22 @@
+
+site_name: UMAF Mini
+site_description: "UMAF Mini: a tiny, opinionated envelope for text/Markdown"
+repo_url: https://github.com/your-org/UMAF_mini
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - toc.integrate
+    - content.code.copy
+nav:
+  - Overview: index.md
+  - Envelope: envelope.md
+  - CLI: cli.md
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - codehilite
+  - tables
+plugins:
+  - search

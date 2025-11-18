@@ -19,21 +19,16 @@ let package = Package(
 
   // 2. DEFINE THE "TARGET"
   // This tells SPM where to find the source code.
+  // inside Package(...)
   targets: [
     .target(
       name: "UMAFCore",
-      dependencies: [
-        // Add any external dependencies *this* module needs here.
-        // For example, if your core logic needed ArgumentParser:
-        // .product(name: "ArgumentParser", package: "swift-argument-parser")
-      ]
-    )
-
-    // You can also add a test target for your core logic
-    /*
+      dependencies: []
+    ),
     .testTarget(
-        name: "UMAFCoreTests",
-        dependencies: ["UMAFCore"]),
-    */
+      name: "UMAFCoreTests",
+      dependencies: ["UMAFCore"]
+    ),
   ]
+
 )

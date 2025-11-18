@@ -32,3 +32,10 @@ crucible/
 schemas/
 data.json
 schema.json
+
+# Local-only junk
+.DS_Store
+.build/
+node_modules/
+_root_backup/
+UMAF_mini-*.zip

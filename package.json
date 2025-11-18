@@ -1,14 +1,16 @@
 {
   "name": "umaf_mini",
   "version": "1.0.0",
-  "description": "",
+  "description": "Build + validate UMAF Mini envelopes from Markdown/JSON/TXT inputs.",
   "main": "index.js",
   "scripts": {
-    "validate:schema": "node scripts/validate2020.mjs --schema schemas/umaf-mini-envelope-v0.4.1.schema.json",
-    "validate:envelopes": "node scripts/run-envelopes.mjs"
+    "validate:schema": "node scripts/validate2020.mjs --schema spec/umaf-mini-envelope-v0.4.1.schema.json",
+    "validate:envelopes": "node scripts/run-envelopes.mjs",
+    "lint:swift": "./scripts/swiftlint.sh",
+    "ci": "npm run validate:schema && npm run validate:envelopes"
   },
   "keywords": [],
-  "author": "",
+  "author": "JP Sweeney",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {

@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/umaf-mini-envelope-v0.4.1.schema.json",
+  "title": "UMAF Mini Envelope v0.4.1",
+  "type": "object",
+  "required": [
+    "version",
+    "docTitle",
+    "docId",
+    "createdAt",
+    "sourceHash",
+    "sourcePath",
+    "mediaType",
+    "encoding",
+    "sizeBytes",
+    "lineCount",
+    "normalized",
+    "sections",
+    "bullets",
+    "frontMatter",
+    "tables",
+    "codeBlocks"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "umaf-mini-0.4.1"
+    },
+    "docTitle": {
+      "type": "string"
+    },
+    "docId": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sourceHash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "sourcePath": {
+      "type": "string"
+    },
+    "mediaType": {
+      "type": "string"
+    },
+    "encoding": {
+      "type": "string"
+    },
+    "sizeBytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "lineCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "normalized": {
+      "type": "string"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Section"
+      }
+    },
+    "bullets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Bullet"
+      }
+    },
+    "frontMatter": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/FrontMatterEntry"
+      }
+    },
+    "tables": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Table"
+      }
+    },
+    "codeBlocks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/CodeBlock"
+      }
+    }
+  },
+  "$defs": {
+    "Section": {
+      "type": "object",
+      "required": [
+        "heading",
+        "level",
+        "lines",
+        "paragraphs"
+      ],
+      "properties": {
+        "heading": {
+          "type": "string"
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "paragraphs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Bullet": {
+      "type": "object",
+      "required": [
+        "text",
+        "lineIndex"
+      ],
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "lineIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sectionHeading": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sectionLevel": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "FrontMatterEntry": {
+      "type": "object",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Table": {
+      "type": "object",
+      "required": [
+        "startLineIndex",
+        "header",
+        "rows"
+      ],
+      "properties": {
+        "startLineIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "header": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "CodeBlock": {
+      "type": "object",
+      "required": [
+        "startLineIndex",
+        "code"
+      ],
+      "properties": {
+        "startLineIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "language": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "code": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
