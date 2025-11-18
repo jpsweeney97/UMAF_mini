@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode Project
+# Use recursive glob (**) to find user settings anywhere
+**/*.xcodeproj/xcuserdata/
+**/*.xcodeproj/project.xcworkspace/
+build/
+Build/
+DerivedData/
+
+# Swift Package Manager
+.build/
+Packages/*/.build/
+Packages/*/Packages/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# VSCode
+.vscode/
+
+# Project-specific generated files
+# (These folders seem to contain generated test data)
+.build/
+crucible/
+schemas/
+data.json
+schema.json
