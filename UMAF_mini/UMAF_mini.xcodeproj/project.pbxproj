@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E80F42B32ECD1A4B00131FD5 /* UMAF_miniApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42B02ECD1A4B00131FD5 /* UMAF_miniApp.swift */; };
+		E80F42B42ECD1A4B00131FD5 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = E80F42AD2ECD1A4B00131FD5 /* .swiftlint.yml */; };
+		E80F42B52ECD1A4B00131FD5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80F42AE2ECD1A4B00131FD5 /* Assets.xcassets */; };
+		E80F42C82ECD1D7600131FD5 /* CodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42C72ECD1D7000131FD5 /* CodeEditor.swift */; };
+		E80F42CA2ECD1DB800131FD5 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42C92ECD1DB800131FD5 /* MainWindow.swift */; };
+		E80F42CC2ECD1DD300131FD5 /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42CB2ECD1DD300131FD5 /* SidebarView.swift */; };
+		E80F42CE2ECD1DE500131FD5 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42CD2ECD1DE500131FD5 /* EditorView.swift */; };
+		E80F42D02ECD1DFF00131FD5 /* InspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42CF2ECD1DFF00131FD5 /* InspectorView.swift */; };
+		E80F42D22ECD1E1D00131FD5 /* SampeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42D12ECD1E1A00131FD5 /* SampeData.swift */; };
+		E80F42D42ECD1F3500131FD5 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42D32ECD1F2B00131FD5 /* AppState.swift */; };
+		E80F42D82ECD1F8800131FD5 /* FileObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42D72ECD1F8500131FD5 /* FileObserver.swift */; };
+		E80F42DA2ECD224C00131FD5 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42D92ECD224A00131FD5 /* Theme.swift */; };
+		E80F42DC2ECD22D500131FD5 /* UMAFEnvelope.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F42DB2ECD22D000131FD5 /* UMAFEnvelope.swift */; };
 		E82F028F2ECC2A9F002FB0B7 /* UMAFCore in Frameworks */ = {isa = PBXBuildFile; productRef = E82F028E2ECC2A9F002FB0B7 /* UMAFCore */; };
 		E82F02912ECC37B6002FB0B7 /* UMAFCore in Frameworks */ = {isa = PBXBuildFile; productRef = E82F02902ECC37B6002FB0B7 /* UMAFCore */; };
 		E840049E2ECBB8F800A54F97 /* PDFKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E840049D2ECBB8F800A54F97 /* PDFKit.framework */; };
@@ -26,6 +39,19 @@
 
 /* Begin PBXFileReference section */
 		E80C3A4D2ECC18F40015DFFB /* UMAFCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = UMAFCore; path = ../Packages/UMAFCore; sourceTree = SOURCE_ROOT; };
+		E80F42AD2ECD1A4B00131FD5 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		E80F42AE2ECD1A4B00131FD5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E80F42B02ECD1A4B00131FD5 /* UMAF_miniApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UMAF_miniApp.swift; sourceTree = "<group>"; };
+		E80F42C72ECD1D7000131FD5 /* CodeEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditor.swift; sourceTree = "<group>"; };
+		E80F42C92ECD1DB800131FD5 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
+		E80F42CB2ECD1DD300131FD5 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		E80F42CD2ECD1DE500131FD5 /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
+		E80F42CF2ECD1DFF00131FD5 /* InspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorView.swift; sourceTree = "<group>"; };
+		E80F42D12ECD1E1A00131FD5 /* SampeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampeData.swift; sourceTree = "<group>"; };
+		E80F42D32ECD1F2B00131FD5 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		E80F42D72ECD1F8500131FD5 /* FileObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileObserver.swift; sourceTree = "<group>"; };
+		E80F42D92ECD224A00131FD5 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		E80F42DB2ECD22D000131FD5 /* UMAFEnvelope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UMAFEnvelope.swift; sourceTree = "<group>"; };
 		E840049D2ECBB8F800A54F97 /* PDFKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PDFKit.framework; path = System/Library/Frameworks/PDFKit.framework; sourceTree = SDKROOT; };
 		E8B2C5712ECB9D8300870C74 /* UMAFMiniCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UMAFMiniCLI; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8C1751D2EC6EB34009B2CC9 /* UMAF_mini.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UMAF_mini.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -35,11 +61,6 @@
 		E8B2C5722ECB9D8300870C74 /* UMAFMiniCLI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = UMAFMiniCLI;
-			sourceTree = "<group>";
-		};
-		E8C1751F2EC6EB34009B2CC9 /* UMAF_mini */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = UMAF_mini;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -65,6 +86,74 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E80F42B12ECD1A4B00131FD5 /* UMAF_mini */ = {
+			isa = PBXGroup;
+			children = (
+				E80F42B62ECD1AC700131FD5 /* App */,
+				E80F42BC2ECD1B5700131FD5 /* Views */,
+				E80F42B82ECD1ADA00131FD5 /* Core */,
+				E80F42B92ECD1ADF00131FD5 /* Components */,
+				E80F42BA2ECD1AE600131FD5 /* Theme */,
+				E80F42BB2ECD1AEC00131FD5 /* Sample */,
+				E80F42AD2ECD1A4B00131FD5 /* .swiftlint.yml */,
+				E80F42AE2ECD1A4B00131FD5 /* Assets.xcassets */,
+			);
+			path = UMAF_mini;
+			sourceTree = "<group>";
+		};
+		E80F42B62ECD1AC700131FD5 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				E80F42B02ECD1A4B00131FD5 /* UMAF_miniApp.swift */,
+				E80F42C92ECD1DB800131FD5 /* MainWindow.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		E80F42B82ECD1ADA00131FD5 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				E80F42DB2ECD22D000131FD5 /* UMAFEnvelope.swift */,
+				E80F42D72ECD1F8500131FD5 /* FileObserver.swift */,
+				E80F42D32ECD1F2B00131FD5 /* AppState.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		E80F42B92ECD1ADF00131FD5 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E80F42C72ECD1D7000131FD5 /* CodeEditor.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E80F42BA2ECD1AE600131FD5 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				E80F42D92ECD224A00131FD5 /* Theme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		E80F42BB2ECD1AEC00131FD5 /* Sample */ = {
+			isa = PBXGroup;
+			children = (
+				E80F42D12ECD1E1A00131FD5 /* SampeData.swift */,
+			);
+			path = Sample;
+			sourceTree = "<group>";
+		};
+		E80F42BC2ECD1B5700131FD5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E80F42CB2ECD1DD300131FD5 /* SidebarView.swift */,
+				E80F42CD2ECD1DE500131FD5 /* EditorView.swift */,
+				E80F42CF2ECD1DFF00131FD5 /* InspectorView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		E840049C2ECBB8F800A54F97 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -77,7 +166,7 @@
 		E8C175142EC6EB34009B2CC9 = {
 			isa = PBXGroup;
 			children = (
-				E8C1751F2EC6EB34009B2CC9 /* UMAF_mini */,
+				E80F42B12ECD1A4B00131FD5 /* UMAF_mini */,
 				E8B2C5722ECB9D8300870C74 /* UMAFMiniCLI */,
 				E840049C2ECBB8F800A54F97 /* Frameworks */,
 				E8C1751E2EC6EB34009B2CC9 /* Products */,
@@ -135,9 +224,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				E8C1751F2EC6EB34009B2CC9 /* UMAF_mini */,
-			);
 			name = UMAF_mini;
 			packageProductDependencies = (
 				E82F028E2ECC2A9F002FB0B7 /* UMAFCore */,
@@ -192,6 +278,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E80F42B42ECD1A4B00131FD5 /* .swiftlint.yml in Resources */,
+				E80F42B52ECD1A4B00131FD5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,6 +369,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E80F42CA2ECD1DB800131FD5 /* MainWindow.swift in Sources */,
+				E80F42D22ECD1E1D00131FD5 /* SampeData.swift in Sources */,
+				E80F42D42ECD1F3500131FD5 /* AppState.swift in Sources */,
+				E80F42CC2ECD1DD300131FD5 /* SidebarView.swift in Sources */,
+				E80F42DC2ECD22D500131FD5 /* UMAFEnvelope.swift in Sources */,
+				E80F42DA2ECD224C00131FD5 /* Theme.swift in Sources */,
+				E80F42CE2ECD1DE500131FD5 /* EditorView.swift in Sources */,
+				E80F42D82ECD1F8800131FD5 /* FileObserver.swift in Sources */,
+				E80F42D02ECD1DFF00131FD5 /* InspectorView.swift in Sources */,
+				E80F42C82ECD1D7600131FD5 /* CodeEditor.swift in Sources */,
+				E80F42B32ECD1A4B00131FD5 /* UMAF_miniApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

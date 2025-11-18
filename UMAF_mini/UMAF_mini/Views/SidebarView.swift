@@ -8,11 +8,26 @@
 import SwiftUI
 
 struct SidebarView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    @EnvironmentObject private var appState: AppState
 
-#Preview {
-    SidebarView()
+    var body: some View {
+        List {
+            Section("File") {
+                Button {
+                    appState.pickFile()
+                } label: {
+                    Label("Choose File…", systemImage: "folder")
+                }
+            }
+
+            if let url = appState.selectedFile {
+                Section("Current") {
+                    Label(url.lastPathComponent, systemImage: "doc.text")
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+        }
+        .listStyle(.sidebar)
+    }
 }

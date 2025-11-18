@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct UMAF_miniApp: App {
-  var body: some Scene {
-    WindowGroup {
-      ContentView()
+    @StateObject private var appState = AppState()
+
+    var body: some Scene {
+        WindowGroup {
+            MainWindow()
+                .environmentObject(appState)
+                .frame(minWidth: 1000, minHeight: 700)
+        }
+        .windowToolbarStyle(.unifiedCompact)
     }
-  }
 }
+
