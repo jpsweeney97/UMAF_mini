@@ -25,11 +25,9 @@ yarn-error.log
 .vscode/
 
 # Project-specific generated files
-# (These folders seem to contain generated test data)
+# (These folders used to contain generated test data; crucible is now canonical)
 .build/
-crucible/
 schemas/
-data.json
 schema.json
 
 # Local-only junk
