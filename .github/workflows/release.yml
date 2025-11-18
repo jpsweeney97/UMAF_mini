@@ -38,6 +38,7 @@ jobs:
         run: xcodebuild -version
 
       - name: Create keychain and import certs
+        if: ${{ env.CERT_BASE64 != '' && env.CERT_PASSWORD != '' && env.KEYCHAIN_PASSWORD != '' }}
         run: |
           security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
           security default-keychain -s build.keychain
@@ -46,15 +47,18 @@ jobs:
           security import apple.cer.p12 -k build.keychain -P "$CERT_PASSWORD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
 
+
       - name: Build CLI (release)
         run: |
           swift build -c release
 
       - name: Codesign binary
+        if: ${{ env.CERT_BASE64 != '' && env.CERT_PASSWORD != '' && env.KEYCHAIN_PASSWORD != '' }}
         run: |
           BIN=".build/release/${PRODUCT_NAME}"
           /usr/bin/codesign --force --sign "-" --timestamp "$BIN" || true
           ls -l "$BIN"
+
 
       - name: Create tarball
         run: |
@@ -68,10 +72,11 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: UMAF Mini ${{ github.ref_name }}
+          tag_name: ${{ github.event.inputs.version || github.ref_name }}
+          name: UMAF Mini ${{ github.event.inputs.version || github.ref_name }}
           draft: false
           prerelease: false
           files: ${{ env.TARBALL }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
