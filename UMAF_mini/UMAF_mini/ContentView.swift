@@ -195,7 +195,9 @@ struct ContentView: View {
             .keyboardShortcut("o", modifiers: [.command])
 
             Button {
-              Task { await transform() }
+              Task {
+                await transform()
+              }
             } label: {
               Label("Transform", systemImage: "wand.and.stars")
             }
@@ -721,11 +723,29 @@ struct ContentView: View {
       let fileName = makeSuggestedFileName(template: nameTemplate, baseName: baseName, ext: outExt)
       let outURL = outDir.appendingPathComponent(fileName)
 
-      // Run core (synchronously)
+      // Run core on a background queue to avoid blocking the main actor
       let coreFormat = selectedCoreFormat()
-      let transformer = UMAFMiniCore.Transformer()
-      let outputData = try transformer.transformFile(inputURL: url, outputFormat: coreFormat)
-      let envData = try transformer.transformFile(inputURL: url, outputFormat: .jsonEnvelope)
+      let inputURL = url
+
+      subStatusMessage = "Running core transformer…"
+      progressValue = 0.25
+
+      let (outputData, envData): (Data, Data) = try await withCheckedThrowingContinuation {
+        continuation in
+        DispatchQueue.global(qos: .userInitiated).async {
+          do {
+            let transformer = UMAFMiniCore.Transformer()
+            let out = try transformer.transformFile(inputURL: inputURL, outputFormat: coreFormat)
+            let env = try transformer.transformFile(inputURL: inputURL, outputFormat: .jsonEnvelope)
+            continuation.resume(returning: (out, env))
+          } catch {
+            continuation.resume(throwing: error)
+          }
+        }
+      }
+
+      progressValue = 0.75
+      subStatusMessage = "Writing output…"
 
       // Decode envelope for metrics
       let env = try JSONDecoder().decode(UMAFMiniCore.Envelope.self, from: envData)

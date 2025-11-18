@@ -101,6 +101,7 @@
 			buildConfigurationList = E8B2C5752ECB9D8300870C74 /* Build configuration list for PBXNativeTarget "UMAFMiniCLI" */;
 			buildPhases = (
 				E8B2C56D2ECB9D8300870C74 /* Sources */,
+				E82F029C2ECC4012002FB0B7 /* ShellScript */,
 				E8B2C56E2ECB9D8300870C74 /* Frameworks */,
 				E8B2C56F2ECB9D8300870C74 /* CopyFiles */,
 			);
@@ -125,6 +126,7 @@
 			buildPhases = (
 				E8C175192EC6EB34009B2CC9 /* Sources */,
 				E840049F2ECBD2B600A54F97 /* ShellScript */,
+				E82F029D2ECC403D002FB0B7 /* ShellScript */,
 				E8B2C56A2ECB96F500870C74 /* Validate UMAF envelopes */,
 				E8C1751A2EC6EB34009B2CC9 /* Frameworks */,
 				E8C1751B2EC6EB34009B2CC9 /* Resources */,
@@ -196,6 +198,40 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		E82F029C2ECC4012002FB0B7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null 2>&1; then\n  cd \"${SRCROOT}/..\"\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed. Install with 'brew install swiftlint'.\"\nfi\n";
+		};
+		E82F029D2ECC403D002FB0B7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null 2>&1; then\n  cd \"${SRCROOT}/..\"\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed. Install with 'brew install swiftlint'.\"\nfi\n";
+		};
 		E840049F2ECBD2B600A54F97 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
