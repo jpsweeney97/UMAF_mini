@@ -8,60 +8,59 @@ import Foundation
 import PDFKit
 
 // A tiny namespace so this file never collides with app-local symbols.
-enum UMAFMiniCore {
+public enum UMAFMiniCore {
 
-  // MARK: - Data model (namespaced)
-  struct Section: Codable {
-    let heading: String
-    let level: Int
-    let lines: [String]
-    let paragraphs: [String]
+  public struct Section: Codable {
+    public let heading: String
+    public let level: Int
+    public let lines: [String]
+    public let paragraphs: [String]
   }
 
-  struct Table: Codable {
-    let startLineIndex: Int
-    let header: [String]
-    let rows: [[String]]
+  public struct Table: Codable {
+    public let startLineIndex: Int
+    public let header: [String]
+    public let rows: [[String]]
   }
 
-  struct CodeBlock: Codable {
-    let startLineIndex: Int
-    let language: String?
-    let code: String
+  public struct CodeBlock: Codable {
+    public let startLineIndex: Int
+    public let language: String?
+    public let code: String
   }
 
-  struct Bullet: Codable {
-    let text: String
-    let lineIndex: Int
-    let sectionHeading: String?
-    let sectionLevel: Int?
+  public struct Bullet: Codable {
+    public let text: String
+    public let lineIndex: Int
+    public let sectionHeading: String?
+    public let sectionLevel: Int?
   }
 
-  struct FrontMatterEntry: Codable {
-    let key: String
-    let value: String
+  public struct FrontMatterEntry: Codable {
+    public let key: String
+    public let value: String
   }
 
-  struct Envelope: Codable {
-    let version: String
-    let docTitle: String
-    let docId: String
-    let createdAt: String
-    let sourceHash: String
-    let sourcePath: String
-    let mediaType: String
-    let encoding: String
-    let sizeBytes: Int
-    let lineCount: Int
-    let normalized: String
-    let sections: [Section]
-    let bullets: [Bullet]
-    let frontMatter: [FrontMatterEntry]
-    let tables: [Table]
-    let codeBlocks: [CodeBlock]
+  public struct Envelope: Codable {
+    public let version: String
+    public let docTitle: String
+    public let docId: String
+    public let createdAt: String
+    public let sourceHash: String
+    public let sourcePath: String
+    public let mediaType: String
+    public let encoding: String
+    public let sizeBytes: Int
+    public let lineCount: Int
+    public let normalized: String
+    public let sections: [Section]
+    public let bullets: [Bullet]
+    public let frontMatter: [FrontMatterEntry]
+    public let tables: [Table]
+    public let codeBlocks: [CodeBlock]
   }
 
-  enum OutputFormat: String, CaseIterable {
+  public enum OutputFormat: String, CaseIterable {
     case jsonEnvelope
     case markdown
   }
@@ -673,9 +672,11 @@ enum UMAFMiniCore {
 
   // MARK: - Transformer (single entry point for app + CLI)
 
-  struct Transformer {
+  public struct Transformer {
 
-    func transformFile(inputURL url: URL, outputFormat: OutputFormat) throws -> Data {
+    public init() {}
+
+    public func transformFile(inputURL url: URL, outputFormat: OutputFormat) throws -> Data {
       // 1) Read bytes
       let data = try Data(contentsOf: url)
       let sizeBytes = data.count

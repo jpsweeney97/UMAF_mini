@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E82F028F2ECC2A9F002FB0B7 /* UMAFCore in Frameworks */ = {isa = PBXBuildFile; productRef = E82F028E2ECC2A9F002FB0B7 /* UMAFCore */; };
+		E82F02912ECC37B6002FB0B7 /* UMAFCore in Frameworks */ = {isa = PBXBuildFile; productRef = E82F02902ECC37B6002FB0B7 /* UMAFCore */; };
 		E840049E2ECBB8F800A54F97 /* PDFKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E840049D2ECBB8F800A54F97 /* PDFKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E82F02912ECC37B6002FB0B7 /* UMAFCore in Frameworks */,
 				E840049E2ECBB8F800A54F97 /* PDFKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -111,6 +113,7 @@
 			);
 			name = UMAFMiniCLI;
 			packageProductDependencies = (
+				E82F02902ECC37B6002FB0B7 /* UMAFCore */,
 			);
 			productName = UMAFMiniCLI;
 			productReference = E8B2C5712ECB9D8300870C74 /* UMAFMiniCLI */;
@@ -524,6 +527,11 @@
 /* Begin XCSwiftPackageProductDependency section */
 		E82F028E2ECC2A9F002FB0B7 /* UMAFCore */ = {
 			isa = XCSwiftPackageProductDependency;
+			productName = UMAFCore;
+		};
+		E82F02902ECC37B6002FB0B7 /* UMAFCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E82F028D2ECC2A9F002FB0B7 /* XCLocalSwiftPackageReference "../Packages/UMAFCore" */;
 			productName = UMAFCore;
 		};
 /* End XCSwiftPackageProductDependency section */

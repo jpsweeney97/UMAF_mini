@@ -1,13 +1,11 @@
 import Foundation
-import UMAFCore  // this is the package module
-
-// Core = the shared transformer type inside the module
-typealias Core = UMAFMiniCore
+import UMAFCore  // module from the local package
 
 // Simple top-level entry point for the UMAF Mini CLI.
+
 var inputPath: String?
 var outputPath: String?
-var format: Core.OutputFormat = .jsonEnvelope
+var format: UMAFMiniCore.OutputFormat = .jsonEnvelope
 
 var it = CommandLine.arguments.dropFirst().makeIterator()
 while let arg = it.next() {
@@ -37,7 +35,7 @@ guard let inPath = inputPath, let outPath = outputPath else {
 }
 
 do {
-  let transformer = Core.Transformer()
+  let transformer = UMAFMiniCore.Transformer()
   let data = try transformer.transformFile(
     inputURL: URL(fileURLWithPath: inPath),
     outputFormat: format

@@ -8,19 +8,8 @@
 import AppKit
 import OSLog
 import SwiftUI
+import UMAFCore  // from the local package
 import UniformTypeIdentifiers
-import UMAFCore
-
-typealias Core = UMAFMiniCore
-
-#if canImport(UMAFCore)
-  import UMAFCore
-  typealias Core = UMAFCore
-#else
-  typealias Core = UMAFMiniCore
-#endif
-
-
 
 // MARK: - Helpers (app-only)
 
@@ -691,100 +680,96 @@ struct ContentView: View {
     }
   }
 
-private func selectedCoreFormat() -> Core.OutputFormat {
-  switch selectedOutputFormat {
-  case .jsonEnvelope: return .jsonEnvelope
-  case .markdown: return .markdown
-  }
-}
-
-/// Thin wrapper: invoke UMAFMiniCore.Transformer for both the selected output
-/// and the JSON envelope (for UI metrics and preview).
-private func transform() async {
-  guard let url = selectedFileURL else {
-    statusMessage = "Pick a file first."
-    statusIsError = true
-    return
-  }
-
-  resetDebugLogIfNeeded(forFile: url)
-  umafLogger.log("Starting transform for file: \(url.lastPathComponent, privacy: .public)")
-
-  isTransforming = true
-  statusIsError = false
-  statusMessage = "Working…"
-  subStatusMessage = "Running core transformer…"
-  progressValue = 0.0
-
-  defer {
-    isTransforming = false
-    progressValue = 0.0
-    subStatusMessage = ""
-  }
-
-  do {
-    // Decide output path
-    let baseName = url.deletingPathExtension().lastPathComponent
-    let outDir = defaultOutputDirectoryURL ?? url.deletingLastPathComponent()
-    let outExt = (selectedOutputFormat == .jsonEnvelope) ? "json" : "md"
-    let nameTemplate =
-      (selectedOutputFormat == .jsonEnvelope) ? jsonNameTemplate : markdownNameTemplate
-    let fileName = makeSuggestedFileName(template: nameTemplate, baseName: baseName, ext: outExt)
-    let outURL = outDir.appendingPathComponent(fileName)
-
-    // Run core (synchronously)
-    let coreFormat = selectedCoreFormat()
-    let transformer = Core.Transformer()
-    let outputData = try transformer.transformFile(inputURL: url, outputFormat: coreFormat)
-    let envData = try transformer.transformFile(inputURL: url, outputFormat: .jsonEnvelope)
-    let env = try JSONDecoder().decode(Core.Envelope.self, from: envData)
-
-    // Write output
-    subStatusMessage = "Writing output…"
-    try outputData.write(to: outURL)
-
-    // Decode envelope for metrics
-    let env = try JSONDecoder().decode(UMAFMiniCore.Envelope.self, from: envData)
-
-    // Update UI state
-    lastOutputURL = outURL
-    lastMediaTypeRaw = env.mediaType
-    lastMediaTypeLabel = displayLabel(for: env.mediaType)
-    lastSizeBytes = env.sizeBytes
-    lastLineCount = env.lineCount
-    lastSectionCount = env.sections.count
-    lastBulletCount = env.bullets.count
-    lastFrontMatterCount = env.frontMatter.count
-    lastOutputFormatLabel = selectedOutputFormat.label
-    lastTransformDate = Date()
-
-    lastJsonPreview = String(decoding: envData, as: UTF8.self)
-    if selectedOutputFormat == .markdown {
-      lastMarkdownPreview = String(decoding: outputData, as: UTF8.self)
-    } else {
-      lastMarkdownPreview = nil
+  private func selectedCoreFormat() -> UMAFMiniCore.OutputFormat {
+    switch selectedOutputFormat {
+    case .jsonEnvelope: return .jsonEnvelope
+    case .markdown: return .markdown
     }
-    selectedPreviewFormat = (lastMarkdownPreview != nil) ? .markdown : .json
+  }
 
-    // Add to recent
-    recentTransforms.insert(
-      UMAFMiniRecentTransform(
-        sourceURL: url,
-        mediaLabel: lastMediaTypeLabel ?? env.mediaType,
-        outputFormatLabel: selectedOutputFormat.label,
-        timestamp: Date()
-      ),
-      at: 0
-    )
+  /// Thin wrapper: invoke UMAFMiniCore.Transformer for both the selected output
+  /// and the JSON envelope (for UI metrics and preview).
+  private func transform() async {
+    guard let url = selectedFileURL else {
+      statusMessage = "Pick a file first."
+      statusIsError = true
+      return
+    }
 
-    statusMessage = "Wrote \(outURL.lastPathComponent)"
+    resetDebugLogIfNeeded(forFile: url)
+    umafLogger.log("Starting transform for file: \(url.lastPathComponent, privacy: .public)")
+
+    isTransforming = true
     statusIsError = false
-    umafLogger.log("Finished transform for file: \(url.lastPathComponent, privacy: .public)")
-    logDebug("Output → \(outURL.path)")
-  } catch {
-    statusMessage = "Transform failed: \(error.localizedDescription)"
-    statusIsError = true
-    umafLogger.error("Transform failed: \(error.localizedDescription, privacy: .public)")
-    logDebug("ERROR: \(error.localizedDescription)")
+    statusMessage = "Working…"
+    subStatusMessage = "Running core transformer…"
+    progressValue = 0.0
+
+    defer {
+      isTransforming = false
+      progressValue = 0.0
+      subStatusMessage = ""
+    }
+
+    do {
+      // Decide output path
+      let baseName = url.deletingPathExtension().lastPathComponent
+      let outDir = defaultOutputDirectoryURL ?? url.deletingLastPathComponent()
+      let outExt = (selectedOutputFormat == .jsonEnvelope) ? "json" : "md"
+      let nameTemplate =
+        (selectedOutputFormat == .jsonEnvelope) ? jsonNameTemplate : markdownNameTemplate
+      let fileName = makeSuggestedFileName(template: nameTemplate, baseName: baseName, ext: outExt)
+      let outURL = outDir.appendingPathComponent(fileName)
+
+      // Run core (synchronously)
+      let coreFormat = selectedCoreFormat()
+      let transformer = UMAFMiniCore.Transformer()
+      let outputData = try transformer.transformFile(inputURL: url, outputFormat: coreFormat)
+      let envData = try transformer.transformFile(inputURL: url, outputFormat: .jsonEnvelope)
+
+      // Decode envelope for metrics
+      let env = try JSONDecoder().decode(UMAFMiniCore.Envelope.self, from: envData)
+
+      // Update UI state
+      lastOutputURL = outURL
+      lastMediaTypeRaw = env.mediaType
+      lastMediaTypeLabel = displayLabel(for: env.mediaType)
+      lastSizeBytes = env.sizeBytes
+      lastLineCount = env.lineCount
+      lastSectionCount = env.sections.count
+      lastBulletCount = env.bullets.count
+      lastFrontMatterCount = env.frontMatter.count
+      lastOutputFormatLabel = selectedOutputFormat.label
+      lastTransformDate = Date()
+
+      lastJsonPreview = String(decoding: envData, as: UTF8.self)
+      if selectedOutputFormat == .markdown {
+        lastMarkdownPreview = String(decoding: outputData, as: UTF8.self)
+      } else {
+        lastMarkdownPreview = nil
+      }
+      selectedPreviewFormat = (lastMarkdownPreview != nil) ? .markdown : .json
+
+      // Add to recent
+      recentTransforms.insert(
+        UMAFMiniRecentTransform(
+          sourceURL: url,
+          mediaLabel: lastMediaTypeLabel ?? env.mediaType,
+          outputFormatLabel: selectedOutputFormat.label,
+          timestamp: Date()
+        ),
+        at: 0
+      )
+
+      statusMessage = "Wrote \(outURL.lastPathComponent)"
+      statusIsError = false
+      umafLogger.log("Finished transform for file: \(url.lastPathComponent, privacy: .public)")
+      logDebug("Output → \(outURL.path)")
+    } catch {
+      statusMessage = "Transform failed: \(error.localizedDescription)"
+      statusIsError = true
+      umafLogger.error("Transform failed: \(error.localizedDescription, privacy: .public)")
+      logDebug("ERROR: \(error.localizedDescription)")
+    }
   }
 }
