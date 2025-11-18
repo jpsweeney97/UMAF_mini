@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E82F028F2ECC2A9F002FB0B7 /* UMAFCore in Frameworks */ = {isa = PBXBuildFile; productRef = E82F028E2ECC2A9F002FB0B7 /* UMAFCore */; };
 		E840049E2ECBB8F800A54F97 /* PDFKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E840049D2ECBB8F800A54F97 /* PDFKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E82F028F2ECC2A9F002FB0B7 /* UMAFCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +135,7 @@
 			);
 			name = UMAF_mini;
 			packageProductDependencies = (
+				E82F028E2ECC2A9F002FB0B7 /* UMAFCore */,
 			);
 			productName = UMAF_mini;
 			productReference = E8C1751D2EC6EB34009B2CC9 /* UMAF_mini.app */;
@@ -165,6 +168,9 @@
 			);
 			mainGroup = E8C175142EC6EB34009B2CC9;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E82F028D2ECC2A9F002FB0B7 /* XCLocalSwiftPackageReference "../Packages/UMAFCore" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E8C1751E2EC6EB34009B2CC9 /* Products */;
 			projectDirPath = "";
@@ -507,6 +513,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		E82F028D2ECC2A9F002FB0B7 /* XCLocalSwiftPackageReference "../Packages/UMAFCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/UMAFCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E82F028E2ECC2A9F002FB0B7 /* UMAFCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UMAFCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E8C175152EC6EB34009B2CC9 /* Project object */;
 }

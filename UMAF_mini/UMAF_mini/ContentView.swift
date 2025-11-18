@@ -9,6 +9,18 @@ import AppKit
 import OSLog
 import SwiftUI
 import UniformTypeIdentifiers
+import UMAFCore
+
+typealias Core = UMAFMiniCore
+
+#if canImport(UMAFCore)
+  import UMAFCore
+  typealias Core = UMAFCore
+#else
+  typealias Core = UMAFMiniCore
+#endif
+
+
 
 // MARK: - Helpers (app-only)
 
@@ -679,12 +691,12 @@ struct ContentView: View {
     }
   }
 
-  private func selectedCoreFormat() -> UMAFMiniCore.OutputFormat {
-    switch selectedOutputFormat {
-    case .jsonEnvelope: return .jsonEnvelope
-    case .markdown: return .markdown
-    }
+private func selectedCoreFormat() -> Core.OutputFormat {
+  switch selectedOutputFormat {
+  case .jsonEnvelope: return .jsonEnvelope
+  case .markdown: return .markdown
   }
+}
 
 /// Thin wrapper: invoke UMAFMiniCore.Transformer for both the selected output
 /// and the JSON envelope (for UI metrics and preview).
@@ -721,12 +733,11 @@ private func transform() async {
     let outURL = outDir.appendingPathComponent(fileName)
 
     // Run core (synchronously)
-    let coreFormat: UMAFMiniCore.OutputFormat =
-      (selectedOutputFormat == .jsonEnvelope) ? .jsonEnvelope : .markdown
-    let transformer = UMAFMiniCore.Transformer()
-
+    let coreFormat = selectedCoreFormat()
+    let transformer = Core.Transformer()
     let outputData = try transformer.transformFile(inputURL: url, outputFormat: coreFormat)
     let envData = try transformer.transformFile(inputURL: url, outputFormat: .jsonEnvelope)
+    let env = try JSONDecoder().decode(Core.Envelope.self, from: envData)
 
     // Write output
     subStatusMessage = "Writing output…"

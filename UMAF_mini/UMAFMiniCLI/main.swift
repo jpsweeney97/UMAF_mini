@@ -1,30 +1,21 @@
-//
-//  main.swift
-//  UMAFMiniCLI
-//
-
 import Foundation
+import UMAFCore  // this is the package module
+
+// Core = the shared transformer type inside the module
+typealias Core = UMAFMiniCore
 
 // Simple top-level entry point for the UMAF Mini CLI.
-// This avoids the '@main' attribute so there is only one entry point
-// per module, and the Swift compiler uses this file's top-level code
-// as the main.
-
 var inputPath: String?
 var outputPath: String?
-var format: UMAFMiniCore.OutputFormat = .jsonEnvelope
+var format: Core.OutputFormat = .jsonEnvelope
 
 var it = CommandLine.arguments.dropFirst().makeIterator()
 while let arg = it.next() {
   switch arg {
-  case "--input":
-    inputPath = it.next()
-  case "--output":
-    outputPath = it.next()
-  case "--json":
-    format = .jsonEnvelope
-  case "--markdown":
-    format = .markdown
+  case "--input": inputPath = it.next()
+  case "--output": outputPath = it.next()
+  case "--json": format = .jsonEnvelope
+  case "--markdown": format = .markdown
   case "--help", "-h":
     print(
       """
@@ -32,12 +23,6 @@ while let arg = it.next() {
 
       Usage:
         umafmini-cli --input <path> [--json|--markdown] --output <path>
-
-      Options:
-        --input       Path to input file
-        --json        Output UMAF Mini JSON envelope (default)
-        --markdown    Output canonical Markdown
-        --output      Path to write output
       """)
     exit(0)
   default:
@@ -52,7 +37,7 @@ guard let inPath = inputPath, let outPath = outputPath else {
 }
 
 do {
-  let transformer = UMAFMiniCore.Transformer()
+  let transformer = Core.Transformer()
   let data = try transformer.transformFile(
     inputURL: URL(fileURLWithPath: inPath),
     outputFormat: format
