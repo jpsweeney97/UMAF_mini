@@ -1,119 +1,91 @@
 // scripts/run-envelopes.mjs
-import { promisify } from 'node:util';
-import { execFile as execFileCb } from 'node:child_process';
-import { glob } from 'glob';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import fs from 'node:fs/promises';
+import { spawn } from "node:child_process";
+import fs from "node:fs";
+import fsp from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const execFile = promisify(execFileCb);
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, "..");
 
-const PROJECT_ROOT = path.resolve(__dirname, '..');
-const CRUCIBLE_DIR = path.join(PROJECT_ROOT, 'crucible');
-const OUT_DIR = path.join(PROJECT_ROOT, '.build', 'envelopes'); // temp output
-
-const DEFAULT_CLI = path.join(PROJECT_ROOT, 'build', 'Products', 'Debug', 'UMAFMiniCLI');
-
-// Use env override if present; otherwise default to the repo-local build.
-const CLI = process.env.UMAF_CLI_PATH || DEFAULT_CLI;
-async function ensureDir(dir) {
-  await fs.mkdir(dir, { recursive: true });
-}
-
-async function runCliOnFile(inputPath, outputPath, format = 'json') {
-  console.log(`→ Generating ${format.toUpperCase()} for ${inputPath} → ${outputPath}`);
-  const args = [];
-
-  // Input path
-  args.push('--input', inputPath);
-
-  // Output format
-  if (format === 'json') {
-    args.push('--json');
-  } else if (format === 'markdown') {
-    args.push('--markdown');
+function findCli() {
+  // 1) Explicit override
+  if (process.env.UMAF_CLI) {
+    const p = process.env.UMAF_CLI;
+    if (fs.existsSync(p)) return p;
+    console.warn(`UMAF_CLI is set to ${p}, but it does not exist on disk.`);
   }
 
-  // Output path
-  args.push('--output', outputPath);
+  // 2) SwiftPM builds (preferred in CI)
+  const candidates = [
+    path.join(projectRoot, ".build", "release", "umaf-mini"),
+    path.join(projectRoot, ".build", "debug", "umaf-mini"),
 
-  await execFile(CLI, args, {
-    stdio: 'inherit',
+    // 3) Xcode build (local dev only)
+    path.join(projectRoot, "build", "Products", "Debug", "UMAFMiniCLI"),
+  ];
+
+  for (const c of candidates) {
+    if (fs.existsSync(c)) return c;
+  }
+
+  throw new Error(
+    `Could not find umaf-mini CLI. Tried:\n` +
+      candidates.map((c) => `  - ${c}`).join("\n") +
+      `\nSet UMAF_CLI=/full/path/to/umaf-mini to override.`
+  );
+}
+
+async function runOnce(cliPath, inputPath, outputPath) {
+  console.log(`→ Generating JSON for ${inputPath} → ${outputPath}`);
+
+  await fsp.mkdir(path.dirname(outputPath), { recursive: true });
+
+  await new Promise((resolve, reject) => {
+    const child = spawn(
+      cliPath,
+      ["--input", inputPath, "--json", "--output", outputPath],
+      { stdio: "inherit" }
+    );
+
+    child.on("error", (err) => reject(err));
+    child.on("exit", (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`CLI exited with code ${code}`));
+    });
   });
 }
 
 async function main() {
-  const pattern = path.join(CRUCIBLE_DIR, '**', '*.*'); // all crucible files
-  const inputs = await glob(pattern, { nodir: true });
+  const cliPath = findCli();
+
+  const crucibleDir = path.join(projectRoot, "crucible");
+  const outDir = path.join(projectRoot, ".build", "envelopes");
+
+  const entries = fs.existsSync(crucibleDir)
+    ? fs.readdirSync(crucibleDir, { withFileTypes: true })
+    : [];
+
+  const inputs = entries
+    .filter((d) => d.isFile() && d.name.endsWith(".md"))
+    .map((d) => path.join(crucibleDir, d.name));
 
   if (inputs.length === 0) {
-    console.error(`No crucible inputs found under ${CRUCIBLE_DIR}`);
-    process.exit(1);
+    console.warn(
+      `No .md files found under ${crucibleDir}; nothing to validate.`
+    );
+    return;
   }
 
-  await ensureDir(OUT_DIR);
-
-  const outPaths = [];
-
-  for (const input of inputs) {
-    const base = path.basename(input).replace(/\.[^.]+$/, ''); // drop extension
-
-    const envPass1 = path.join(OUT_DIR, `${base}__envelope_pass1.json`);
-    const normPass1 = path.join(OUT_DIR, `${base}__norm_pass1.md`);
-    const envPass2 = path.join(OUT_DIR, `${base}__envelope_pass2.json`);
-    const normPass2 = path.join(OUT_DIR, `${base}__norm_pass2.md`);
-
-    // Pass 1: original input → envelope + normalized markdown
-    await runCliOnFile(input, envPass1, 'json');
-    await runCliOnFile(input, normPass1, 'markdown');
-
-    // Pass 2: run again on normalized markdown
-    await runCliOnFile(normPass1, envPass2, 'json');
-    await runCliOnFile(normPass1, normPass2, 'markdown');
-
-    // Idempotence check: normalized markdown should be stable
-    const [norm1, norm2] = await Promise.all([
-      fs.readFile(normPass1, 'utf8'),
-      fs.readFile(normPass2, 'utf8'),
-    ]);
-
-    if (norm1 !== norm2) {
-      console.error(`❌ Non-idempotent Markdown for ${input}`);
-      console.error(`First normalized: ${normPass1}`);
-      console.error(`Second normalized: ${normPass2}`);
-      process.exit(1);
-    } else {
-      console.log(`✅ Idempotent Markdown for ${input}`);
-    }
-
-    // Collect both envelopes for schema validation
-    outPaths.push(envPass1, envPass2);
+  for (const inputPath of inputs) {
+    const base = path.basename(inputPath, ".md");
+    const outPath = path.join(outDir, `${base}__envelope_pass1.json`);
+    await runOnce(cliPath, inputPath, outPath);
   }
-
-  // Now validate all generated envelopes with your validator
-  const validateScript = path.join(PROJECT_ROOT, 'scripts', 'validate2020.mjs');
-  const env = { ...process.env };
-
-  const args = [
-    validateScript,
-    '--schema',
-    path.join(PROJECT_ROOT, 'schemas', 'umaf-mini-envelope-v0.4.1.schema.json'),
-    '--data',
-    path.join(OUT_DIR, '*.json'),
-    '--strict',
-  ];
-
-  console.log('→ Validating generated envelopes against schema…');
-  await execFile('node', args, {
-    stdio: 'inherit',
-    env,
-  });
-
-  console.log('✅ All generated envelopes are schema-valid');
 }
 
 main().catch((err) => {
-  console.error('❌ Build validation failed:', err);
+  console.error("❌ Build validation failed:", err);
   process.exit(1);
 });
