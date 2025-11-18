@@ -1,1 +1,28 @@
-["hello", "not an integer"]
+{
+  "bullets" : [
+
+  ],
+  "codeBlocks" : [
+
+  ],
+  "createdAt" : "2025-11-18T18:45:24Z",
+  "docId" : "sha256:624bd2a35f8dbc40a4509db0c4e55e5ccf0c06266e3d7444b64650e650eb50c1",
+  "docTitle" : "UMAF Mini",
+  "encoding" : "utf-8",
+  "frontMatter" : [
+
+  ],
+  "lineCount" : 134,
+  "mediaType" : "text\/markdown",
+  "normalized" : "# UMAF Mini\n\nA tiny, fast transformer that ingests **plain text**, **Markdown**, or **JSON** and emits a consistent, machine-friendly **UMAF Mini envelope**. The project ships as:\n\n- a reusable Swift library (`UMAFCore`)\n- a SwiftUI macOS app (`UMAF_mini`)\n- a CLI (`umaf-mini`) for pipelines and CI\n\n> Version: envelope schema `umaf-mini-0.4.1`\n\n---\n\n## What does it do?\n\nGiven an input file (`.txt`, `.md`, or `.json`), UMAF Mini computes a stable hash, normalizes newlines and whitespace, extracts structure (headings, bullets, tables, fenced code blocks, and optional front‑matter), and returns either:\n\n- a JSON **envelope** with the normalized content and extracted metadata, or\n- a normalized Markdown document\n\nThe envelope is designed to be lightweight but predictable, and is validated using a JSON Schema in this repo.\n\n## Project layout\n\n```\n.\n├─ Packages\/\n│  └─ UMAFCore\/               # Swift package with the core transformer\n├─ UMAF_mini\/\n│  ├─ UMAFMiniCLI\/            # Xcode-friendly CLI entry point\n│  └─ UMAF_mini\/              # SwiftUI macOS app\n├─ Sources\/\n│  └─ umaf-mini\/              # SwiftPM CLI (ArgumentParser-powered)\n├─ scripts\/                   # Tooling (SwiftLint, envelope validation)\n├─ spec\/                      # JSON Schemas\n└─ .github\/workflows\/         # CI for Swift + Node validation\n```\n\n## Quick start\n\n### Build the CLI (SwiftPM)\n\n```bash\n# macOS 13+ with Xcode 15+ (Swift 5.9+) or Swift toolchain 5.9+\nswift build -c release\n.\/.build\/release\/umaf-mini --help\n```\n\nTransform a file:\n\n```bash\n.\/.build\/release\/umaf-mini --input path\/to\/input.md --json > out.envelope.json\n.\/.build\/release\/umaf-mini --input path\/to\/input.md --markdown > normalized.md\n```\n\n### Run the macOS app\n\nOpen `UMAF_mini\/UMAF_mini.xcodeproj` in Xcode and run the `UMAF_mini` scheme.\n\n### Node-based validation (optional)\n\n```bash\nnpm ci\nnpm run validate:schema         # validate the schema itself\nnpm run validate:envelopes      # build + run crucible inputs and validate outputs\n```\n\n> You can point the runner at a specific CLI by setting `UMAF_CLI=\/path\/to\/umaf-mini`.\n\n## Envelope format (summary)\n\nThe envelope is emitted as JSON with this top-level shape (see the [full schema](.\/spec\/umaf-mini-envelope-v0.4.1.schema.json) for details):\n\n```jsonc\n{\n  \"version\": \"umaf-mini-0.4.1\",\n  \"docTitle\": \"...\",\n  \"docId\": \"...\",            \/\/ stable identifier derived from source\n  \"createdAt\": \"2025-11-13T21:00:00Z\",\n  \"sourceHash\": \"...\",       \/\/ SHA-256 (hex)\n  \"sourcePath\": \"...\",       \/\/ original path (or \"-\" for stdin)\n  \"mediaType\": \"text\/markdown\",\n  \"encoding\": \"utf-8\",\n  \"sizeBytes\": 12345,\n  \"lineCount\": 420,\n  \"normalized\": \"...\",       \/\/ normalized text\/markdown\n  \"sections\": [{ \"heading\": \"...\", \"level\": 2, \"lines\": [...], \"paragraphs\": [...] }],\n  \"bullets\": [{ \"text\": \"...\", \"lineIndex\": 10, \"sectionHeading\": \"...\" }],\n  \"frontMatter\": [{ \"key\": \"title\", \"value\": \"...\" }],\n  \"tables\": [{ \"startLineIndex\": 12, \"header\": [\"A\", \"B\"], \"rows\": [[\"1\",\"2\"]] }],\n  \"codeBlocks\": [{ \"startLineIndex\": 40, \"language\": \"swift\", \"code\": \"...\" }]\n}\n```\n\n## Developing\n\n- **Formatting**: `.swift-format` and `.swiftlint.yml` are configured; run `scripts\/swiftlint.sh`.\n- **Tests**: run `swift test --package-path Packages\/UMAFCore` to exercise the library.\n- **CI**: GitHub Actions builds the Swift package and validates envelopes.\n\n### Common tasks\n\n```bash\n# Build CLI and run a sample transform\nswift build\n.\/.build\/debug\/umaf-mini --input README.md --json | jq .version\n\n# Run UMAFCore tests\nswift test --package-path Packages\/UMAFCore\n\n# Lint Swift\n.\/scripts\/swiftlint.sh\n```\n\n## Why two CLIs?\n\n- `UMAF_mini\/UMAFMiniCLI\/main.swift` is kept for the Xcode project.\n- `Sources\/umaf-mini\/main.swift` is a modern SwiftPM CLI built with ArgumentParser. Use this in CI.\n\n## License\n\nISC © 2025 JP Sweeney\n\n\n## Next-steps implemented\n\n- **Error taxonomy** with stable CLI exit codes and actionable messages (`UMAFUserError`).\n- **Structured logging** via `OSLog` (`UMAFLog.core\/cli\/app\/parsing\/io`).\n- **SwiftUI refactor** with drag‑and‑drop, progress, toast notifications, and \"Reveal in Finder.\"\n- **Crucible inputs** under `crucible\/min` for edge‑case testing.\n- **Docs site** scaffolded with MkDocs Material (`mkdocs.yml`, `docs\/**` + CI in `.github\/workflows\/docs.yml`).\n- **Release automation** job to tag, build, sign, and attach CLI to GitHub Releases (`.github\/workflows\/release.yml`).\n\nSee the [docs](https:\/\/github.com\/your-org\/UMAF_mini) after GitHub Pages is enabled.\n",
+  "sections" : [
+
+  ],
+  "sizeBytes" : 4573,
+  "sourceHash" : "624bd2a35f8dbc40a4509db0c4e55e5ccf0c06266e3d7444b64650e650eb50c1",
+  "sourcePath" : "\/Users\/jp\/Projects\/UMAF_mini\/README.md",
+  "tables" : [
+
+  ],
+  "version" : "umaf-mini-0.4.1"
+}
