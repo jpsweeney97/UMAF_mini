@@ -56,6 +56,179 @@ Transform a file:
 
 Open `UMAF_mini/UMAF_mini.xcodeproj` in Xcode and run the `UMAF_mini` scheme.
 
+## macOS app (UMAF_mini) structure
+
+The SwiftUI macOS app lives under `UMAF_mini/UMAF_mini`. It’s a separate target from the SwiftPM CLI and UMAFCore, but uses UMAFCore directly in-process instead of shelling out to the `umaf-mini` binary.
+
+### Targets
+
+- **UMAF_mini (SwiftUI app)**
+  `UMAF_mini/UMAF_mini.xcodeproj` → target **UMAF_mini**
+
+- **UMAFMiniCLI (Xcode-friendly CLI)**
+  `UMAF_mini/UMAFMiniCLI/*`
+
+- **umaf-mini (SwiftPM CLI)**
+  `Sources/umaf-mini/*`
+
+- **UMAFCore (library)**
+  `Packages/UMAFCore/*`
+
+The rest of this section is about the **UMAF_mini** app target only.
+
+### App entry point and root layout
+
+- `UMAF_mini/UMAF_mini/App/UMAF_miniApp.swift`
+  SwiftUI entry point (`@main`). Creates the window and injects shared state:
+
+  - Creates a single `AppState` (`@StateObject`)
+  - Wraps `MainWindow()` in a `WindowGroup`
+  - Attaches `.environmentObject(appState)` so all views can see it
+
+- `UMAF_mini/UMAF_mini/App/MainWindow.swift`
+  Root view and toolbar:
+  - Hosts a `NavigationSplitView` with:
+    - `SidebarView` (left)
+    - `EditorView` (center)
+    - `InspectorView` (right)
+  - Adds a unified toolbar:
+    - App title (“UMAF Mini”)
+    - **Choose File…** button → `appState.pickFile()`
+    - **Transform** button → `appState.runTransform()`
+
+### Core state and models
+
+All shared logic lives in `Core` and is wired into the app via `AppState`.
+
+- `UMAF_mini/UMAF_mini/Core/AppState.swift`
+  The single source of truth for the app (`ObservableObject`):
+
+  - `@Published var selectedFile: URL?`
+  - `@Published var sourceText: String` – raw file contents
+  - `@Published var outputText: String` – UMAF envelope JSON (as text)
+  - `@Published var envelope: UMAFEnvelope?` – decoded envelope model
+  - `@Published var isRunning: Bool`, `errorMessage: String?`
+  - Handles:
+
+    - Showing an `NSOpenPanel` to pick files (`pickFile()`)
+    - Loading file contents into `sourceText` (`loadFile(_:)`)
+    - Watching the file for changes via `FileObserver`
+    - Calling **UMAFCore** in-process:
+
+      ```swift
+      try UMAFMiniCore.processFile(at: url,
+                                  assumedMediaType: nil,
+                                  output: .json)
+      ```
+
+    - Decoding the JSON into `UMAFEnvelope` for the inspector
+
+- `UMAF_mini/UMAF_mini/Core/FileObserver.swift`
+  Watches the selected file on disk and auto-retransforms:
+
+  - Wraps `DispatchSourceFileSystemObject` on the file descriptor
+  - On `.write` events:
+    - Reloads the file into `sourceText`
+    - Calls `AppState.runTransform()` again
+
+- `UMAF_mini/UMAF_mini/Core/UMAFEnvelope.swift`
+  A minimal `Decodable` model for the UMAF Mini envelope:
+  - Top-level fields like `version`, `docTitle`, `docId`, `createdAt`,
+    `sourceHash`, `sourcePath`, `mediaType`, `encoding`, `sizeBytes`,
+    `lineCount`, `normalized`
+  - Structural collections:
+    - `sections: [Section]?`
+    - `bullets: [Bullet]?`
+    - `frontMatter: [FrontMatterItem]?`
+    - `tables: [Table]?`
+    - `codeBlocks: [CodeBlock]?`
+  - Each nested struct is also `Decodable` and intentionally loose/optional
+    so envelopes from older/newer schema versions don’t crash decoding.
+
+### Views
+
+These files are the actual UI pieces used by `MainWindow`.
+
+- `UMAF_mini/UMAF_mini/Views/SidebarView.swift`
+  Left navigation column:
+
+  - **Choose File…** button → `appState.pickFile()`
+  - Shows the current file name if one is selected
+  - Uses `@EnvironmentObject var appState: AppState`
+
+- `UMAF_mini/UMAF_mini/Views/EditorView.swift`
+  Center pane with tabs and a code editor:
+
+  - Wrapped in `GlassPanel` (from `Theme.swift`)
+  - Top row:
+    - Segmented control: **Input** / **Envelope JSON**
+    - **Transform** button (same behavior as toolbar; calls `runTransform()`)
+  - **Input** tab:
+    - Hosts `CodeEditor(text: $appState.sourceText)` – monospaced editor view
+  - **Envelope JSON** tab:
+    - Scrollable monospaced `Text` bound to `appState.outputText`
+
+- `UMAF_mini/UMAF_mini/Views/InspectorView.swift`
+  Right-hand inspector for envelope metadata:
+  - Wrapped in `GlassPanel`
+  - Uses `appState.envelope` and `appState.errorMessage`
+  - Shows:
+    - File name
+    - `docTitle`, `mediaType`, `encoding`
+    - `lineCount`, `sizeBytes`
+    - Counts of `sections`, `bullets`, `tables`, `codeBlocks`
+    - `sourceHash` in monospaced font, selectable
+    - Last UMAFCore error, if present
+
+### Components
+
+Reusable lower-level views that sit under `Views`.
+
+- `UMAF_mini/UMAF_mini/Components/CodeEditor.swift`
+  A minimal `NSTextView` wrapper for use inside SwiftUI:
+  - Implements `NSViewRepresentable`
+  - Configures a plain, monospaced `NSTextView` (no rich text)
+  - Syncs its string to a `@Binding var text: String`
+  - All actual edits go through this binding (used by `EditorView`)
+
+### Theme
+
+Centralized styling / design tokens.
+
+- `UMAF_mini/UMAF_mini/Theme/Theme.swift`
+  App-wide theme helpers:
+
+  - `UMAFTheme.accent` – accent color to use in buttons
+  - `UMAFTheme.windowGradient` – background gradient for the main window
+  - `UMAFTheme.panelBackground` / `panelBorder` – panel styling
+  - `GlassPanel<Content>` – a reusable glassy card wrapper for content:
+    - Uses `.ultraThinMaterial` + soft border + 14-pt rounded corners
+
+  `MainWindow`, `EditorView`, and `InspectorView` all lean on this so any later
+  design tweaks only need changes in one place.
+
+### Sample data
+
+- `UMAF_mini/UMAF_mini/Sample/SampeData.swift`
+  Small static strings used for previews / initial prototyping:
+  - `sampleMarkdown`
+  - `normalizedOutput`
+  - `sampleEnvelope`
+    The live app no longer depends on these at runtime; they’re mostly useful
+    for Xcode previews or quick experiments.
+
+---
+
+If you’re trying to understand “what code makes the UMAF_mini app actually run,” it’s everything under:
+
+- `UMAF_mini/UMAF_mini/App`
+- `UMAF_mini/UMAF_mini/Core`
+- `UMAF_mini/UMAF_mini/Views`
+- `UMAF_mini/UMAF_mini/Components`
+- `UMAF_mini/UMAF_mini/Theme`
+
+plus **UMAFCore** under `Packages/UMAFCore`, which the app calls directly instead of going through the `umaf-mini` CLI.
+
 ### Node-based validation (optional)
 
 ```bash
